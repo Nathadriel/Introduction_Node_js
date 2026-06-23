@@ -7,7 +7,7 @@ export const signup = async (req, res) => {
     });
     res.status(201).json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message || 'Une erreur est survenue' });
   }
 };
 
