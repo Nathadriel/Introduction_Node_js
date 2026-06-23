@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import * as woodController from '../controllers/wood.js';
+import * as woodController from '../controllers/woodController.js';
 
 router.get('/', woodController.readAll);
 
