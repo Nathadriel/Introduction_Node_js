@@ -16,10 +16,9 @@ const adapter = new PrismaMariaDb({
 
 export const prisma = new PrismaClient({ adapter });
 
-prisma.$connect()
-  .then(() => console.log("Database connected..."))
-  .catch((err) => console.log(err));
+prisma.$connect().then(() => console.log("Database connected...")).catch((err) => console.log(err));
 
+app.use(express.json());
 app.use("/api", router);
 
 export default app;
