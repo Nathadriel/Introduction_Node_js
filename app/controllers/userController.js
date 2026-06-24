@@ -1,6 +1,5 @@
 import { prisma } from '../../app.js';
 import bcrypt from 'bcrypt';
-import { promisify } from "util";
 import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res) => {
