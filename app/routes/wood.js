@@ -1,8 +1,10 @@
 import express from 'express';
-const router = express.Router();
+import auth from '../middlewares/auth.js';
 import * as woodController from '../controllers/woodController.js';
 
-router.get('/', woodController.readAll);
-router.get('/:hardness', woodController.readByHardness);
+const router = express.Router();
+
+router.get('/', auth, woodController.readAll);
+router.get("/:hardness", auth, woodController.readByHardness);
 
 export default router;
