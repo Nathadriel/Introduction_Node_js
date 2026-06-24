@@ -1,15 +1,21 @@
+import bcrypt from 'bcrypt';
 import { prisma } from '../app.js';
 import { WoodType, Hardness } from '../generated/prisma/enums.js';
 
+
 async function main() {
+
+  const hashedPassword = await bcrypt.hash('password123', 10);
   await prisma.user.upsert({
     where: { email: 'john.doe@example.com' },
-    update: {},
+    update: {
+      password: hashedPassword,
+    },
     create: {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
-      password: 'password123',
+      password: hashedPassword,
     },
   });
 
