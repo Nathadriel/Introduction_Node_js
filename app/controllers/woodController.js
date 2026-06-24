@@ -24,17 +24,22 @@ export const readByHardness = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    const pathname = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    const woodData = req.body.datas ? JSON.parse(req.body.datas) : req.body;
+
+    const pathname = req.file
+      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      : (woodData.image || null);
 
     const wood = await prisma.wood.create({
       data: {
-        ...JSON.parse(req.body.datas), 
-        image: pathname,               
+        ...woodData,     
+        image: pathname, 
       },
     });
 
     res.status(201).json(wood);
+
   } catch (err) {
-    res.status(500).json({ error: err.message || 'An error occurred' });
+    res.status(500).json({ error: err.message || 'An error occurred during creation' });
   }
 };
