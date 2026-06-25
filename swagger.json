@@ -128,6 +128,11 @@
                     "rel": "self",
                     "method": "GET",
                     "href": "http://localhost:5000/api/woods/1"
+                  },
+                  {
+                    "rel": "sameHardness",
+                    "method": "GET",
+                    "href": "http://localhost:5000/api/woods/sameHardness/tender"
                   }
                 ]
               }
@@ -219,18 +224,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "datas": {
                     "type": "string",
-                    "example": "Chêne"
-                  },
-                  "type": {
-                    "type": "string",
-                    "example": "Feuillu"
-                  },
-                  "hardness": {
-                    "type": "string",
-                    "enum": ["tender", "medium_hard", "hard"],
-                    "example": "hard"
+                    "example": "{\"name\": \"Chêne\", \"type\": \"Feuillu\", \"hardness\": \"hard\"}",
+                    "description": "Chaîne JSON contenant les métadonnées de l'essence de bois (name, type, hardness)"
                   },
                   "image": {
                     "type": "string",
@@ -239,9 +236,7 @@
                   }
                 },
                 "required": [
-                  "name",
-                  "type",
-                  "hardness",
+                  "datas",
                   "image"
                 ]
               }
