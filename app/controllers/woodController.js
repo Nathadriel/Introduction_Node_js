@@ -1,19 +1,22 @@
 import { prisma } from '../../app.js';
 
+const getWoodLinks = (req, wood) => {
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/woods`;
+  return [
+    { rel: "self", method: "GET", href: `${baseUrl}/${wood.id}` },
+    { rel: "sameHardness", method: "GET", href: `${baseUrl}/${wood.hardness}` },
+  ];
+};
+
+const addLinks = (req, wood) => ({
+  ...wood,
+  links: getWoodLinks(req, wood),
+});
+
 export const readAll = async (req, res) => {
   try {
     const woods = await prisma.wood.findMany();
-    const woodsWithLinks = woods.map(wood => {
-      const baseUrl = `${req.protocol}://${req.get("host")}/api/woods`;
-      return {
-        ...wood,
-        links: [
-          { rel: "self", method: "GET", href: `${baseUrl}/${wood.id}` },
-          { rel: "sameHardness", method: "GET", href: `${baseUrl}/${wood.hardness}` },
-        ]
-      };
-    });
-    res.status(200).json(woodsWithLinks);
+    res.status(200).json(woods.map(wood => addLinks(req, wood)));
   } catch (err) {
     res.status(500).json({ error: err.message || 'An error occurred' });
   }
@@ -24,17 +27,7 @@ export const readByHardness = async (req, res) => {
     const woods = await prisma.wood.findMany({
       where: { hardness: req.params.hardness },
     });
-    const woodsWithLinks = woods.map(wood => {
-      const baseUrl = `${req.protocol}://${req.get("host")}/api/woods`;
-      return {
-        ...wood,
-        links: [
-          { rel: "self", method: "GET", href: `${baseUrl}/${wood.id}` },
-          { rel: "sameHardness", method: "GET", href: `${baseUrl}/${wood.hardness}` },
-        ]
-      };
-    });
-    res.status(200).json(woodsWithLinks);
+    res.status(200).json(woods.map(wood => addLinks(req, wood)));
   } catch (err) {
     res.status(500).json({ error: err.message || 'An error occurred' });
   }
@@ -51,14 +44,7 @@ export const create = async (req, res) => {
       data: { ...woodData, image: pathname },
     });
 
-    const baseUrl = `${req.protocol}://${req.get("host")}/api/woods`;
-    res.status(201).json({
-      ...wood,
-      links: [
-        { rel: "self", method: "GET", href: `${baseUrl}/${wood.id}` },
-        { rel: "sameHardness", method: "GET", href: `${baseUrl}/${wood.hardness}` },
-      ]
-    });
+    res.status(201).json(addLinks(req, wood));
   } catch (err) {
     res.status(500).json({ error: err.message || 'An error occurred during creation' });
   }
