@@ -132,7 +132,7 @@
                   {
                     "rel": "sameHardness",
                     "method": "GET",
-                    "href": "http://localhost:5000/api/woods/sameHardness/tender"
+                    "href": "http://localhost:5000/api/woods/hardness/tender"
                   }
                 ]
               }
@@ -212,6 +212,18 @@
         "tags": [
           "Woods"
         ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Jeton d'authentification JWT au format : Bearer <token>",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -232,12 +244,11 @@
                   "image": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Fichier image de l'essence de bois à téléverser"
+                    "description": "Fichier image de l'essence de bois à téléverser (optionnel)"
                   }
                 },
                 "required": [
-                  "datas",
-                  "image"
+                  "datas"
                 ]
               }
             }
@@ -258,23 +269,35 @@
             "description": "Données invalides ou fichier manquant"
           },
           "401": {
-            "description": "Authentification requise"
+            "description": "Authentification requise. Jeton JWT manquant, expiré ou corrompu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/woods/sameHardness/{hardness}": {
+    "/woods/hardness/{hardness}": {
       "get": {
         "summary": "Récupérer les essences de bois ayant la même dureté",
         "tags": [
           "Woods"
         ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Jeton d'authentification JWT au format : Bearer <token>",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          },
           {
             "name": "hardness",
             "in": "path",
@@ -285,6 +308,11 @@
               "enum": ["tender", "medium_hard", "hard"],
               "example": "tender"
             }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -302,7 +330,14 @@
             }
           },
           "401": {
-            "description": "Authentification requise"
+            "description": "Authentification requise",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
